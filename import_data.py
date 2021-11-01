@@ -1,5 +1,7 @@
 import pandas as pd
-from gsheetsdb import connect
+# from gsheetsdb import connect
+# import gspread
+
 
 # @st.cache
 def import_data():
@@ -223,4 +225,7 @@ def import_data():
     #
     # st.text("df_res_cat")
     # st.write(df_res_cat.head())
+    # CLEAR SHEET CONTENT
+
+    # sht = gc.open_by_url('https://docs.google.com/spreadsheet/ccc?key=0Bm...FE&hl')
     return df
