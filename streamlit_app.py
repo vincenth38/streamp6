@@ -77,6 +77,9 @@ if st.button('update data'):
     df = import_data()
     st.text("df")
     # st.write(df)
+
+
+try:
     csv = convert_df(df)
     st.download_button(
         label="Download data as CSV",
@@ -84,9 +87,6 @@ if st.button('update data'):
         file_name='df.csv',
         mime='text/csv',
     )
-
-try:
-    st.write(df)
 except AttributeError:
     pass
 # catch when it hasn't even been defined
