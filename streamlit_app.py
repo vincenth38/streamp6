@@ -76,7 +76,7 @@ conn = connect()
 if st.button('update data'):
     df = import_data()
     st.text("df")
-    st.write(df.head())
+    # st.write(df)
     csv = convert_df(df)
     st.download_button(
         label="Download data as CSV",
