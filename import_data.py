@@ -100,10 +100,10 @@ def import_data():
 
     df_FM = df.loc[:, df.columns.str.startswith('FY')].replace('h', '', regex=True)
 
-    df_FM = df_FM.astype(float)
+
 
     df = df.fillna(0)
-    df = df.apply(pd.to_numeric, errors='ignore')
+    # df = df.apply(pd.to_numeric, errors='ignore')
 
     # Convert Columns to date
     df_FM.columns = df_FM.columns.str.replace(", FM", "-")
@@ -114,17 +114,22 @@ def import_data():
     # CONVERSION TO REAL DATE
     df_FM.columns = df_FM.columns + pd.DateOffset(months=-3)
 
+    # df_FM = df_FM.astype(float)
+    df_FM = pd.to_numeric(df_FM, errors='coerce')
+
     # df_FY.columns.replace(', FM','-',regex=True)
     # df_FM.head()
     df_FM_FTE = df_FM / (145)
+        df_FM_FTE = df_FM_FTE.add_suffix('FTE')
+    # df_FM_FTE  = df_FM_FTE.astype(float)
+    df_FM_FTE = pd.to_numeric(df_FM_FTE, errors='coerce')
 
-    df_FM_FTE = df_FM_FTE.add_suffix('FTE')
-    df_FM_FTE  = df_FM_FTE.astype(float)
 
     # QUARTER with FY ending up in September
     df_FQ = df_FM.groupby(pd.PeriodIndex(df_FM.columns, freq='Q-SEP'), axis=1).sum()
     df_FQ_FTE = df_FQ / (145 * 3)
-    df_FQ_FTE = df_FQ_FTE.astype(float)
+    # df_FQ_FTE = df_FQ_FTE.astype(float)
+    df_FQ_FTE = pd.to_numeric(df_FQ_FTE, errors='coerce')
 
 
 
