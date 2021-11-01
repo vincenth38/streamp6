@@ -206,7 +206,7 @@ def import_data():
     # st.write(df[500:510])
 
 
-    # df = pd.concat([df, df_FY_FTE, df_FQ, df_FQ_FTE, df_FY, df_FM_FTE, df_FM], axis=1)
+    df = pd.concat([df, df_FY_FTE, df_FQ, df_FQ_FTE, df_FY, df_FM_FTE, df_FM], axis=1)
 
     # df = df[(df['L2']=='1.03') & (df['Type']=='Labor')& (df['Trade'] !='M&S')]
     df = df[(df['L2'] == '1.03')]
