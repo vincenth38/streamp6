@@ -114,7 +114,7 @@ def import_data():
     # CONVERSION TO REAL DATE
     df_FM.columns = df_FM.columns + pd.DateOffset(months=-3)
 
-    # df_FM = df_FM.astype(float)
+    df_FM = df_FM.astype(float)
     df_FM = pd.to_numeric(df_FM, errors='coerce')
 
     # df_FY.columns.replace(', FM','-',regex=True)
