@@ -120,7 +120,7 @@ def import_data():
     # df_FY.columns.replace(', FM','-',regex=True)
     # df_FM.head()
     df_FM_FTE = df_FM / (145)
-        df_FM_FTE = df_FM_FTE.add_suffix('FTE')
+    df_FM_FTE = df_FM_FTE.add_suffix('FTE')
     # df_FM_FTE  = df_FM_FTE.astype(float)
     df_FM_FTE = pd.to_numeric(df_FM_FTE, errors='coerce')
 
