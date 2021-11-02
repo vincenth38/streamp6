@@ -125,14 +125,14 @@ df = load_data()
 df_load_state.text("Done! (using st.cache)")
 
 
-wbs_selection = st.sidebar.selectbox(
-    'Select wbs',
-    df['L3'].unique().tolist())
+# wbs_selection = st.sidebar.selectbox(
+#     'Select wbs',
+#     df['L3'].unique().tolist())
 
-if wbs_selection:
-    temp = df[(df['L3'] == wbs_selection ) & (df['Type'] == 'Labor') & (df['Trade'] != 'M&S')].groupby('Trade').sum().filter(regex=('^2022Q\d{1}$'))
-    temp = temp.loc[(temp != 0).any(axis=1)]
-    st.write(temp)
+# if wbs_selection:
+#     temp = df[(df['L3'] == wbs_selection ) & (df['Type'] == 'Labor') & (df['Trade'] != 'M&S')].groupby('Trade').sum().filter(regex=('^2022Q\d{1}$'))
+#     temp = temp.loc[(temp != 0).any(axis=1)]
+#     st.write(temp)
 
 h_o_FTE = st.sidebar.selectbox(
     'Select Hours or FTE',
