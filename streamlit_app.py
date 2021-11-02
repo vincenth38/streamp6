@@ -137,8 +137,7 @@ if wbs_selection:
 h_o_FTE = st.sidebar.selectbox(
     'Select Hours or FTE',
     ('hours','FTE'),
-    index(0)
-)
+    default='hours')
 
 
 wbs_multi_selection = st.sidebar.multiselect(
