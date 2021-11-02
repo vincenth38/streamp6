@@ -140,7 +140,7 @@ h_o_FTE = st.sidebar.selectbox(
 
 if h_o_FTE == 'FTE':
     suff = 'FTE'
-else
+else:
     suff =''
 wbs_multi_selection = st.sidebar.multiselect(
     'Select wbs',
