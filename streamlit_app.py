@@ -74,8 +74,9 @@ conn = connect()
 #     data_bytes64_String = data_bytes64.decode('utf-8').replace('/','_').replace('+','-').rstrip("=")
 #     resultUrl = f"https://api.onedrive.com/v1.0/shares/u!{data_bytes64_String}/root/content"
 #     return resultUrl
-
-if st.sidebar.button('update data'):
+st.write("P6 raw data  [link](https://docs.google.com/spreadsheets/d/1D2_X4p0qnX1C6cmizv4gJtGiaTY3RPNUW9qJyJaGsCU/edit#gid=921908947)")
+st.write("Clean  [link](https://docs.google.com/spreadsheets/d/19VyS_zz1iy8iK2pTSAumquQp6TWMrxxuYt_61t2IBDk/edit#gid=505509094)")
+if st.sidebar.button('Rebuild Clean data'):
     import_data()
     # st.text("df")
     # st.write(df)
