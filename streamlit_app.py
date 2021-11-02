@@ -107,22 +107,23 @@ if st.button('update data'):
 #     b64 = base64.b64encode(csv.encode()).decode()  # some strings <-> bytes conversions necessary here
 #     href = f'<a href="data:file/csv;base64,{b64}">Download csv file</a>'
 # st.markdown(get_table_download_link(df), unsafe_allow_html=True)
-df = pd.DataFrame()
-df = import_clean()
 
-# @st.cache
-# def load_data():
-#     # Create a text element and let the reader know the data is loading.
-#
-#
-#     df = import_clean()
-#     # Notify the reader that the data was successfully loaded.
-#     data_load_state.text("Done! (using st.cache)")
-#     return df
-#
-# if st.button('Load Data'):
-#     data_load_state = st.text('Loading data...')
-#     df = load_data()
+
+@st.cache
+def load_data():
+    # Create a text element and let the reader know the data is loading.
+    df = import_clean()
+    # Notify the reader that the data was successfully loaded.
+    return df
+
+
+
+
+df_load_state = st.text('Loading data...')
+df = load_data()
+df_load_state.text("Done! (using st.cache)")
+
+
 
 if st.button('Diplay Trade FTE 2022'):
     st.text('1.03.03')
