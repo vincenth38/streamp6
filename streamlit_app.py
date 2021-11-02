@@ -1,5 +1,5 @@
-import plotly.express as px
-import plotly.graph_objects as go
+# import plotly.express as px
+# import plotly.graph_objects as go
 import streamlit as st
 from gsheetsdb import connect
 # import import_data
