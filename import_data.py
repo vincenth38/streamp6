@@ -3,7 +3,7 @@ import gspread
 from gspread_dataframe import set_with_dataframe
 # from gsheetsdb import connect
 # import gspread
-api_key = 'AIzaSyDfZcKxsxvrUuss4EW4lBhTrSX3GmVjyu8'
+
 
 # @st.cache
 
