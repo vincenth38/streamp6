@@ -75,7 +75,7 @@ conn = connect()
 #     resultUrl = f"https://api.onedrive.com/v1.0/shares/u!{data_bytes64_String}/root/content"
 #     return resultUrl
 
-if st.button('update data'):
+if st.sidebar.button('update data'):
     import_data()
     # st.text("df")
     # st.write(df)
@@ -119,26 +119,63 @@ def load_data():
 
 
 
-df_load_state = st.text('Loading data...')
+df_load_state = st.sidebar.text('Loading data...')
 df = load_data()
 df_load_state.text("Done! (using st.cache)")
 
 
+wbs_selection = st.sidebar.selectbox(
+    'Select wbs',
+    df['L3'].unique().tolist())
+if wbs_selection:
+    temp = df[(df['L3'] == wbs_selection ) & (df['Type'] == 'Labor') & (df['Trade'] != 'M&S')].groupby('Trade').sum().filter(regex=('^2022Q\d{1}$'))
+    temp = temp.loc[(temp != 0).any(axis=1)]
+    st.write(temp)
 
-if st.button('Diplay Trade FTE 2022'):
-    st.text('1.03.03')
-    st.write(df[(df['L3'] == '1.03.03') & (df['Type'] == 'Labor') & (df['Trade'] != 'M&S')].groupby('Trade').sum().filter(regex=('^2022Q\d{1}$')))
-    st.text('1.03.04')
-    st.write(
-        df[(df['L3'] == '1.03.04') & (df['Type'] == 'Labor') & (df['Trade'] != 'M&S')].groupby('Trade').sum().filter(
-            regex=('^2022Q\d{1}$')))
-    st.text('1.03.05')
-    st.write(
-        df[(df['L3'] == '1.03.05') & (df['Type'] == 'Labor') & (df['Trade'] != 'M&S')].groupby('Trade').sum().filter(
-            regex=('^2022Q\d{1}$')))
 
-if st.button('disply'):
-    st.write(df[(df['L3']=='1.03.06') & (df['Type']=='Labor') & (df['Trade'] !='M&S')].groupby('Trade').sum().filter(regex=('^2022Q\d{1}$')))
+wbs_multi_selection = st.sidebar.multiselect(
+    'Select wbs',
+    df['L3'].unique().tolist())
+if wbs_multi_selection:
+    temp = df[(df['L3'].isin(wbs_multi_selection)) & (df['Type'] == 'Labor') & (df['Trade'] != 'M&S')].groupby('Trade').sum().filter(regex=('^2022Q\d{1}$'))
+    temp = temp.loc[(temp != 0).any(axis=1)]
+    st.write(temp)
+    # st.write(df[(df['L3'].isin(wbs_multi_selection)) & (df['Type'] == 'Labor') & (df['Trade'] != 'M&S')].groupby('Trade').sum().filter(regex=('^2022Q\d{1}$')))
+
+
+
+#https://discuss.streamlit.io/t/pass-filtered-dataframe-through-three-dropdown-levels/5562
+
+# def df_filtered(
+#     df: pd.DataFrame,  # Source dataframe
+#     f_date_range: [int, int],  # Current value of an ST date slider
+#     f_manager: list = [],  # Current value of an ST multi-select
+#     f_program: list = [],  # Current value of another ST multi-select
+# ) -> pd.DataFrame:
+#     dff = df.loc[f_date_range[0] : f_date_range[1]].reset_index(drop=True)
+#     if len(f_manager) > 0:
+#         dff = dff.loc[(dff["owner"].isin(f_manager))].reset_index(drop=True)
+#     if len(f_program) > 0:
+#         dff = dff.loc[(dff["program"].isin(f_program))].reset_index(drop=True)
+#     return dff
+#
+# dff = df_filtered(df, f_date_range=ctl_date_slider, f_manager=ctl_manager_multi, f_program=ctl_program_multi)
+
+#
+# another way
+# def select_1(source_df: pd.DataFrame) -> pd.DataFrame:
+#     selected_mgr = st.multiselect(
+#         "Select Manager Name for further exploration below",
+#         source_df["manager"].unique(),
+#     )
+#     selected_1_df = source_df[(source_df["manager"].isin(selected_mgr))]
+#     if selected_mgr:
+#         st.write('You have selected', selected_mgr)
+#     return selected_1_df
+
+
+
+
 
 # *******Gantt Chart
 # df_1 = pd.DataFrame([
