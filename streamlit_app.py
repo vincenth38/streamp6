@@ -1,4 +1,5 @@
-# import plotly.express as px
+import matplotlib
+import plotly.express as px
 # import plotly.graph_objects as go
 import streamlit as st
 from gsheetsdb import connect
@@ -150,6 +151,18 @@ if wbs_multi_selection:
     temp = temp.loc[(temp != 0).any(axis=1)]
     st.write(temp)
     # st.write(df[(df['L3'].isin(wbs_multi_selection)) & (df['Type'] == 'Labor') & (df['Trade'] != 'M&S')].groupby('Trade').sum().filter(regex=('^2022Q\d{1}$')))
+    # st.write(temp.columns)
+    # st.write(str(temp))
+    # print(str(temp))
+    print(temp)
+    print(temp.index.tolist())
+    print(temp.values.tolist())
+    fig = px.bar(temp.transpose())
+    st.plotly_chart(fig)
+
+# long_df = px.data.medals_long()
+# fig = px.bar(temp, x=temp.index, y=temp.values, color=temp.index, title="Long-Form Input")
+# fig.show()
 
 
 
