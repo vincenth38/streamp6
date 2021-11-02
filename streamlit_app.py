@@ -138,12 +138,15 @@ h_o_FTE = st.sidebar.selectbox(
     'Select Hours or FTE',
     ('hours','FTE'))
 
-
+if h_o_FTE == 'FTE':
+    suff = 'FTE'
+else
+    suff =''
 wbs_multi_selection = st.sidebar.multiselect(
     'Select wbs',
     df['L3'].unique().tolist())
 if wbs_multi_selection:
-    temp = df[(df['L3'].isin(wbs_multi_selection)) & (df['Type'] == 'Labor') & (df['Trade'] != 'M&S')].groupby('Trade').sum().filter(regex=('^2022Q\d{1}$'))
+    temp = df[(df['L3'].isin(wbs_multi_selection)) & (df['Type'] == 'Labor') & (df['Trade'] != 'M&S')].groupby('Trade').sum().filter(regex=('^2022Q\d{1}'+ suff + '$'))
     temp = temp.loc[(temp != 0).any(axis=1)]
     st.write(temp)
     # st.write(df[(df['L3'].isin(wbs_multi_selection)) & (df['Type'] == 'Labor') & (df['Trade'] != 'M&S')].groupby('Trade').sum().filter(regex=('^2022Q\d{1}$')))
