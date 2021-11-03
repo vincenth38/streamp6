@@ -6,8 +6,8 @@ import streamlit as st
 from gsheetsdb import connect
 import import_data
 import import_data
-# from import_data import import_data
-# from import_data import import_clean
+from import_data import import_data,import_clean
+
 # from import_data import set_date
 import re
 import pandas as pd
