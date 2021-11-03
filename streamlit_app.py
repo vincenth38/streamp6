@@ -4,7 +4,8 @@ import plotly.express as px
 import streamlit as st
 # from streamlit import caching
 from gsheetsdb import connect
-# import import_data
+import import_data
+import import_data
 from import_data import import_data,import_clean,set_date
 import re
 import pandas as pd
