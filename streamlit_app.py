@@ -2,54 +2,39 @@ import matplotlib
 import plotly.express as px
 # import plotly.graph_objects as go
 import streamlit as st
+# from streamlit import caching
 from gsheetsdb import connect
 # import import_data
-from import_data import import_data,import_clean
+from import_data import import_data,import_clean,set_date
+import re
 import pandas as pd
 import time
-
+st.set_page_config(layout="wide")
 
 # IMPORTANT: Cache the conversion to prevent computation on every rerun
 def convert_df(df):
     return df.to_csv().encode('utf-8')
 
 
-# st.title("Convert P6")
-# st.title("Connect to Google Sheets")
-#Insert a file uploader that accepts multiple files at a time:
-# uploaded_files = st.file_uploader("Choose a CSV file", accept_multiple_files=True)
-# for uploaded_file in uploaded_files:
-#   bytes_data = uploaded_file.read()
-#   st.write("filename:", uploaded_file.name)
-#   st.write(bytes_data)
+@st.cache
+def load_data():
+    # Create a text element and let the reader know the data is loading.
+    # if df:
+    #     del df
+    df = import_clean()
+    return df
 
 
-# if uploaded_files is not None:
-#   df = pd.read_csv(uploaded_files)
-#   st.write(df)
-
+def full_load():
+    # Create a text element and let the reader know the data is loading.
+    # if df:
+    #     del df
+    df = import_data()
+    # return df
 
 
 # Create a connection object.
 conn = connect()
-# sheet_url = st.secrets["public_gsheets_url"]
-
-# Perform SQL query on the Google Sheet.
-# Uses st.cache to only rerun when the query changes or after 10 min.
-# @st.cache(ttl=600)
-# def run_query(query):
-#     rows = conn.execute(query, headers=1)
-#     return rows
-
-
-# rows = run_query(f'SELECT * FROM "{sheet_url}"')
-
-# Print results.
-# for row in rows:
-#     st.write(f"{row.name} has a :{row.pet}:")
-    # st.write(row)
-#
-
 
 # d/1D2_X4p0qnX1C6cmizv4gJtGiaTY3RPNUW9qJyJaGsCU/
 
@@ -75,90 +60,89 @@ conn = connect()
 #     data_bytes64_String = data_bytes64.decode('utf-8').replace('/','_').replace('+','-').rstrip("=")
 #     resultUrl = f"https://api.onedrive.com/v1.0/shares/u!{data_bytes64_String}/root/content"
 #     return resultUrl
+# if st.sidebar.text("Clear history cache"):
+#     caching.clear_cache()
+
 st.sidebar.write("P6 raw data  [link](https://docs.google.com/spreadsheets/d/1D2_X4p0qnX1C6cmizv4gJtGiaTY3RPNUW9qJyJaGsCU/edit#gid=921908947)")
 st.sidebar.write("Clean  [link](https://docs.google.com/spreadsheets/d/19VyS_zz1iy8iK2pTSAumquQp6TWMrxxuYt_61t2IBDk/edit#gid=505509094)")
+
 if st.sidebar.button('Rebuild Clean data'):
-    import_data()
-    # st.text("df")
-    # st.write(df)
-
-# try:
-#     csv = convert_df(df)
-#     st.download_button(
-#         label="Download data as CSV",
-#         data=csv,
-#         file_name='df.csv',
-#         mime='text/csv',
-#     )
-# except AttributeError:
-#     pass
-# # catch when it hasn't even been defined
-# except NameError:
-#     pass
-
-# if st.button('save dataframe'):
-#     open('df.csv', 'w').write(df.to_csv())
-#
-# # st.write(df)
-# def get_table_download_link(df):
-#     """Generates a link allowing the data in a given panda dataframe to be downloaded
-#     in:  dataframe
-#     out: href string
-#     """
-#     csv = df.to_csv(index=False)
-#     b64 = base64.b64encode(csv.encode()).decode()  # some strings <-> bytes conversions necessary here
-#     href = f'<a href="data:file/csv;base64,{b64}">Download csv file</a>'
-# st.markdown(get_table_download_link(df), unsafe_allow_html=True)
-
-
-@st.cache
-def load_data():
-    # Create a text element and let the reader know the data is loading.
-    df = import_clean()
-    # Notify the reader that the data was successfully loaded.
-    return df
-
-
+    df = full_load()
 
 
 df_load_state = st.sidebar.text('Loading data...')
 df = load_data()
 df_load_state.text("Done! (using st.cache)")
 
-
-# wbs_selection = st.sidebar.selectbox(
-#     'Select wbs',
-#     df['L3'].unique().tolist())
-
-# if wbs_selection:
-#     temp = df[(df['L3'] == wbs_selection ) & (df['Type'] == 'Labor') & (df['Trade'] != 'M&S')].groupby('Trade').sum().filter(regex=('^2022Q\d{1}$'))
-#     temp = temp.loc[(temp != 0).any(axis=1)]
-#     st.write(temp)
+duration = 'month'
+h_o_FTE = 'hours'
 
 h_o_FTE = st.sidebar.selectbox(
     'Select Hours or FTE',
     ('hours','FTE'))
-
 if h_o_FTE == 'FTE':
     suff = 'FTE'
 else:
     suff =''
+
+
+duration = st.sidebar.selectbox(
+    'Select Hours or FTE',
+    ('month','quarter','year'))
+
+year_select = '2021'
+year_select = st.sidebar.multiselect(
+    'Select years',
+    ('2021','2022','2023'))
+
+wbs_multi_selection ='1.03.04'
 wbs_multi_selection = st.sidebar.multiselect(
     'Select wbs',
     df['L3'].unique().tolist())
-if wbs_multi_selection:
-    temp = df[(df['L3'].isin(wbs_multi_selection)) & (df['Type'] == 'Labor') & (df['Trade'] != 'M&S')].groupby('Trade').sum().filter(regex=('^2022Q\d{1}'+ suff + '$'))
-    temp = temp.loc[(temp != 0).any(axis=1)]
-    st.write(temp)
-    # st.write(df[(df['L3'].isin(wbs_multi_selection)) & (df['Type'] == 'Labor') & (df['Trade'] != 'M&S')].groupby('Trade').sum().filter(regex=('^2022Q\d{1}$')))
-    # st.write(temp.columns)
-    # st.write(str(temp))
-    # print(str(temp))
-    print(temp)
-    print(temp.index.tolist())
-    print(temp.values.tolist())
-    fig = px.bar(temp.transpose())
-    st.plotly_chart(fig)
+#
+#
+if duration and h_o_FTE and wbs_multi_selection and year_select:
+    # df= full_load()
+    df_date = set_date(df, duration, h_o_FTE)
+    column_selection = df_date.columns
+
+    df_date  = df_date[(df_date['L3'].isin(wbs_multi_selection)) & (df_date['Type'] == 'Labor') & (df_date['Trade'] != 'M&S')]
+
+
+
+
+    df_date =  df_date.groupby('Trade').sum() #+year_select)+
+
+    a = '|'.join([str(x) for x in year_select])
+
+    reg_exp = '\b(?<!@)('+a+')\b'
+    st.write(reg_exp )
+    df_date = df_date.filter(regex=('^'+a))
+
+
+    # df_date = df_date.loc[(df_date != 0).any(axis=1)]
+
+    # pattern = re.compile("|".join(year_select))
+    # result = [i for i in df_date.columns.astype(str) if pattern.match(i)]
+    # result.append('Trade')
+    # st.write(result)
+    #
+    # # df_date = df_date[df_date.columns.intersection(set(result))]
+    #
+    st.dataframe(df_date)
+    # st.write(df_date.columns)
+
+    if duration == 'month':
+        fig = px.bar(df_date.transpose())
+        fig.update_layout(
+            autosize = True,
+            width=800,
+            height=500,
+            margin=dict(l=20, r=20, t=20, b=20),
+        )
+
+        st.plotly_chart(fig)
+
 
 # long_df = px.data.medals_long()
 # fig = px.bar(temp, x=temp.index, y=temp.values, color=temp.index, title="Long-Form Input")
