@@ -237,7 +237,7 @@ def import_data():
     set_with_dataframe(worksheet, df)  # -> THIS EXPORTS YOUR DATAFRAME TO THE GOOGLE SHEET
     return df
 
-def set_date(df,duration, h_o_FTE):
+def change_period(df,duration, h_o_FTE):
     # df = df.dropna()
 
     df_Period_2 = pd.DataFrame

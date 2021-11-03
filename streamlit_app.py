@@ -7,8 +7,7 @@ from gsheetsdb import connect
 import import_data
 import import_data
 from import_data import import_data,import_clean
-
-# from import_data import set_date
+from import_data import change_period
 import re
 import pandas as pd
 import time
@@ -106,7 +105,7 @@ wbs_multi_selection = st.sidebar.multiselect(
 #
 if duration and h_o_FTE and wbs_multi_selection and year_select:
     # df= full_load()
-    df_date = set_date(df, duration, h_o_FTE)
+    df_date = change_period(df, duration, h_o_FTE)
     column_selection = df_date.columns
 
     df_date  = df_date[(df_date['L3'].isin(wbs_multi_selection)) & (df_date['Type'] == 'Labor') & (df_date['Trade'] != 'M&S')]
