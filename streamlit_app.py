@@ -78,31 +78,36 @@ df_load_state = st.sidebar.text('Loading data...')
 df = load_data()
 df_load_state.text("Done! (using st.cache)")
 
-duration = 'month'
-h_o_FTE = 'hours'
+
+wbs_multi_selection = st.sidebar.multiselect(
+    'Select wbs',
+    df['L3'].unique().tolist(),
+    default=["1.03.04"])
+
+year_select = st.sidebar.multiselect(
+    'Select years',
+    ('2019','2020','2021','2022','2023','2024','2025','2026','2027','2028','2029','2030'),
+    default=["2021","2022","2023"])
+# h_o_FTE = 'FTE'
 
 h_o_FTE = st.sidebar.selectbox(
     'Select Hours or FTE',
     ('hours','FTE'))
+
 if h_o_FTE == 'FTE':
     suff = 'FTE'
 else:
     suff =''
 
-
+# duration = 'month'
 duration = st.sidebar.selectbox(
-    'Select Hours or FTE',
-    ('month','quarter','year'))
+    'Select Period',
+    ('month','quarter','year'),
+    )
 
-year_select = '2021'
-year_select = st.sidebar.multiselect(
-    'Select years',
-    ('2021','2022','2023'))
 
-wbs_multi_selection ='1.03.04'
-wbs_multi_selection = st.sidebar.multiselect(
-    'Select wbs',
-    df['L3'].unique().tolist())
+
+
 
 
 if duration and h_o_FTE and wbs_multi_selection and year_select:
@@ -139,9 +144,9 @@ if duration and h_o_FTE and wbs_multi_selection and year_select:
 
         fig = px.bar(df_date.transpose())
         fig.update_layout(
-            autosize = True,
-            width=800,
-            height=500,
+            # autosize = False,
+            width=1600,
+            height=600,
             margin=dict(l=20, r=20, t=20, b=20),
         )
 
