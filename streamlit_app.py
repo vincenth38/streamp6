@@ -1,3 +1,5 @@
+import json
+from pandas.api.types import is_datetime64_any_dtype as is_datetime
 import matplotlib
 import plotly.express as px
 # import plotly.graph_objects as go
@@ -101,8 +103,8 @@ wbs_multi_selection ='1.03.04'
 wbs_multi_selection = st.sidebar.multiselect(
     'Select wbs',
     df['L3'].unique().tolist())
-#
-#
+
+
 if duration and h_o_FTE and wbs_multi_selection and year_select:
     # df= full_load()
     df_date = change_period(df, duration, h_o_FTE)
@@ -110,15 +112,13 @@ if duration and h_o_FTE and wbs_multi_selection and year_select:
 
     df_date  = df_date[(df_date['L3'].isin(wbs_multi_selection)) & (df_date['Type'] == 'Labor') & (df_date['Trade'] != 'M&S')]
 
-
-
-
     df_date =  df_date.groupby('Trade').sum() #+year_select)+
 
     a = '|'.join([str(x) for x in year_select])
 
     reg_exp = '\b(?<!@)('+a+')\b'
-    st.write(reg_exp )
+
+
     df_date = df_date.filter(regex=('^'+a))
 
 
@@ -131,16 +131,44 @@ if duration and h_o_FTE and wbs_multi_selection and year_select:
     #
     # # df_date = df_date[df_date.columns.intersection(set(result))]
     #
+    df_date = df_date.loc[~(df_date == 0).all(axis=1)]
     st.dataframe(df_date)
     # st.write(df_date.columns)
 
     if duration == 'month':
+
         fig = px.bar(df_date.transpose())
         fig.update_layout(
             autosize = True,
             width=800,
             height=500,
             margin=dict(l=20, r=20, t=20, b=20),
+        )
+
+        st.plotly_chart(fig)
+
+    if duration == 'quarter' or duration == 'year':
+        df_date_T= df_date.T
+        df_date_T['date'] = df_date_T.index
+        if duration == 'quarter':
+            qs = df_date_T.index.astype(str).str.replace(r'(d+)(Qd)', r'2-1')
+            df_date_T['date'] = pd.PeriodIndex(qs, freq='Q').to_timestamp()
+        if duration == 'year':
+            # qs = df_date_T.index.astype(str).str.replace(r'(d+)(Qd)', r'2-1')
+            df_date_T['date'] = pd.PeriodIndex(df_date_T.index).to_timestamp()
+
+        labels = print(list(df_date_T.index.astype(str)))
+        print(df_date_T['date'])
+
+        colonnes = list(df_date_T.iloc[:, 1:-1].columns)
+
+        fig = px.bar(df_date_T,x=df_date_T.date,y=colonnes)
+        fig.update_layout(
+            autosize = True,
+            width=800,
+            height=500,
+            margin=dict(l=20, r=20, t=20, b=20),
+
         )
 
         st.plotly_chart(fig)
@@ -201,3 +229,14 @@ if duration and h_o_FTE and wbs_multi_selection and year_select:
 #         l=51, r=5, b=10, t=50))
 # fig2.update_traces(marker_color='#17A2B8', selector=dict(type='bar'))
 # st.plotly_chart(fig2)
+
+
+
+# df_test  = df[(df['L3'].isin(wbs_multi_selection)) & (df['Type'] == 'Labor') & (df['Trade'] != 'M&S')]
+# df_test2 = df_test[['Trade','Start','Finish']
+# prd = pd.period_range(df_test2.loc[0, 'Start'], df.loc[0, 'Finish'], freq='D')
+# prd = pd.Series(1, prd) # empty series to get the number of days in the monthly period
+# prd = prd.resample('Q').size() * (df.loc[0, 'spend'] / prd.resample('Q').size().sum())
+# prd = prd.to_frame()
+# st.write(prd)
+

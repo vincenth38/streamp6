@@ -275,4 +275,5 @@ def change_period(df,duration, h_o_FTE):
 
     # # df = pd.concat([df,df_FY_FTE, df_FQ, df_FQ_FTE, df_FY, df_FM_FTE, df_FM], axis=1)
     df_date_2 =  pd.concat([df_date,df_Period_2], axis=1)
+    df_date_2 = df_date_2.loc[~(df_date == 0).all(axis=1)]
     return  df_date_2
