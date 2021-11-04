@@ -145,7 +145,7 @@ if duration and h_o_FTE and wbs_multi_selection and year_select:
         fig = px.bar(df_date.transpose())
         fig.update_layout(
             autosize = True,
-            width=1600,
+            width=1400,
             height=600,
             margin=dict(l=10, r=10, t=20, b=20),
         )
