@@ -1,6 +1,7 @@
 import streamlit as st
 import numpy as np
 import pandas as pd
+import sqlite3
 from pages import utils
 
 @st.cache
@@ -44,6 +45,23 @@ def app():
         except Exception as e:
             print(e)
             data = pd.read_excel(uploaded_file)
+
+
+        cur = con.cursor()
+        #
+        # # a_file = open("test.csv")
+        # rows = csv.reader(uploaded_file)
+        # cur.executemany("INSERT INTO data VALUES (?, ?)", rows)
+        # cur.execute("SELECT * FROM data")
+        # print(cur.fetchall()
+
+
+        con = sqlite3.connect('data\info.db')
+        'dfs = pd.read_excel('somefile.xlsx', sheet_name=None)
+        for table, df in data.items():
+            df.to_sql(table, con)
+        con.commit()
+        con.close()
 
 
     
