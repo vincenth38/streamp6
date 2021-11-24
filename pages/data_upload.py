@@ -4,6 +4,7 @@ import pandas as pd
 import sqlite3
 from pages import utils
 
+
 @st.cache
 def import_clean():
     sheet_id = '19VyS_zz1iy8iK2pTSAumquQp6TWMrxxuYt_61t2IBDk'
@@ -40,28 +41,28 @@ def app():
     global data
     if uploaded_file is not None:
         try:
-            data = pd.read_csv(uploaded_file)
+            # chunksize = 10
+            conn = sqlite3.connect('data\info.db')
+            wb = pd.read_excel(uploaded_file, sheet_name=None)  #, chunksize=chunksize)
+            for sheet in wb:
+                wb[sheet].to_sql(name=sheet, con=conn, if_exists='append')
+            con.commit()
+            con.close()
+
+
+
+
+
 
         except Exception as e:
             print(e)
-            data = pd.read_excel(uploaded_file)
+            # wb = pd.read_excel(uploaded_file, sheet_name=None)
 
 
-        cur = con.cursor()
-        #
-        # # a_file = open("test.csv")
-        # rows = csv.reader(uploaded_file)
-        # cur.executemany("INSERT INTO data VALUES (?, ?)", rows)
-        # cur.execute("SELECT * FROM data")
-        # print(cur.fetchall()
+        # dfs = pd.read_excel('somefile.xlsx', sheet_name=None)
+        # wb = pd.read_excel('CPS\CPS.xlsx', sheet_name=None)
 
 
-        con = sqlite3.connect('data\info.db')
-        'dfs = pd.read_excel('somefile.xlsx', sheet_name=None)
-        for table, df in data.items():
-            df.to_sql(table, con)
-        con.commit()
-        con.close()
 
 
     
